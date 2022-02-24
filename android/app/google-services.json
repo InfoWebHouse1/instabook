@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "24854445725",
+    "project_id": "instabook-84957",
+    "storage_bucket": "instabook-84957.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:24854445725:android:88c5c6eac01652ca4bde74",
+        "android_client_info": {
+          "package_name": "com.frasat.instabook"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "24854445725-hiprjmafdrajoam0iia6i8oibbs6tdug.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.frasat.instabook",
+            "certificate_hash": "416e7a03dbc7a235730963aaa11a6fba44c7d761"
+          }
+        },
+        {
+          "client_id": "24854445725-l1jttfe1dmfe54gm0d812ahffme95j32.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSFzEqqqwbUgKC-6RotvubQwyJd3XXyJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "24854445725-l1jttfe1dmfe54gm0d812ahffme95j32.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
