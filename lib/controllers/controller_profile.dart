@@ -18,7 +18,6 @@ class ProfileController extends GetxController {
   final updateBioController = TextEditingController();
   final updatePhnController = TextEditingController();
   final updateGenderController = "".obs;
-  var isThemeDark = false.obs;
 
   final authController = Get.put(AuthController());
   var showProgressIndicator = false.obs;
@@ -115,12 +114,5 @@ class ProfileController extends GetxController {
     );
   }
 
-  void changeTheme(state){
-    if(state == true){
-      isThemeDark.value = true;
-    }else{
-      isThemeDark.value = false;
-    }
-    update();
-  }
+
 }

@@ -10,12 +10,14 @@ class ProfileData2 extends StatelessWidget {
     required this.fontSize,
     required this.hasLine,
     required this.fontWeight,
+    required this.color,
   }) : super(key: key);
   final double width;
   final String text;
   final double fontSize;
   final bool hasLine;
   final FontWeight fontWeight;
+  final Color color;
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +30,8 @@ class ProfileData2 extends StatelessWidget {
           maxLines: hasLine ? 6 : null,
           style: TextStyle(
             fontSize: fontSize,
-            fontWeight: fontWeight
+            fontWeight: fontWeight,
+            color: color,
           ),
         ),
       ),

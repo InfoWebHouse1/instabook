@@ -30,6 +30,10 @@ class EditProfileScreen extends StatelessWidget {
           30.5,
         ),
         centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: () => Get.back(),
+        ),
       ),
       body: buildBody(context),
     );

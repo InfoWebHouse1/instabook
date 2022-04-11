@@ -19,7 +19,7 @@ class CustomProfileEditButton extends StatelessWidget {
           ),
           elevation: 3,
           color: Colors.white,
-          splashColor: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+          splashColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
           onPressed: () => Get.to(() => EditProfileScreen()),
           child: Center(
               child: Text(

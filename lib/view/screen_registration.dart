@@ -28,88 +28,86 @@ class RegistrationScreen extends StatelessWidget {
   }
 
   buildBody(BuildContext context) {
-    return Obx(
-      () => SafeArea(
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => FocusScope.of(context).unfocus(),
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Form(
-              autovalidateMode: AutovalidateMode.always,
-              key: registerController.registerFormKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  //todo:  username form
-                  CustomTextForm(
-                    labelText: "Username",
-                    controller: registerController.nameController,
-                    icon: Icon(Icons.person),
-                    validator: RequiredValidator(errorText: "Required *"),
-                    isPassword: false,
+    return SafeArea(
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Form(
+            autovalidateMode: AutovalidateMode.always,
+            key: registerController.registerFormKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                //todo:  username form
+                CustomTextForm(
+                  labelText: "Username",
+                  controller: registerController.nameController,
+                  icon: Icon(Icons.person),
+                  validator: RequiredValidator(errorText: "Required *"),
+                  isPassword: false,
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                //todo:  email form
+                CustomTextForm(
+                  labelText: "Email",
+                  controller: registerController.emailController,
+                  icon: Icon(Icons.mail_rounded),
+                  validator: MultiValidator(
+                    [
+                      RequiredValidator(errorText: "Required *"),
+                      EmailValidator(errorText: "Not a Valid Email")
+                    ],
                   ),
-                  SizedBox(
-                    height: 20.0,
+                  isPassword: false,
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                //todo: genderform
+                GenderButton(),
+                SizedBox(
+                  height: 20.0,
+                ),
+                //todo: password form
+                CustomTextForm(
+                  labelText: "Password",
+                  controller: registerController.passwordController,
+                  icon: Icon(Icons.lock_rounded),
+                  validator: registerController.validatePass,
+                  isPassword: true,
+                ),
+                SizedBox(
+                  height: 20.0,
+                ),
+                //todo: login button
+                Button1(
+                  labelText: "Sign up",
+                  onPressed: () {
+                    registerController.validateSignUp();
+                    print("Sign up");
+                  },
+                ),
+                SizedBox(
+                  height: 40.0,
+                ),
+                Text(
+                  "Or",
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontWeight: FontWeight.bold,
                   ),
-                  //todo:  email form
-                  CustomTextForm(
-                    labelText: "Email",
-                    controller: registerController.emailController,
-                    icon: Icon(Icons.mail_rounded),
-                    validator: MultiValidator(
-                        [
-                          RequiredValidator(errorText: "Required *"),
-                          EmailValidator(errorText: "Not a Valid Email")
-                        ],
-                      ),
-                    isPassword: false,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  //todo: genderform
-                  GenderButton(),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  //todo: password form
-                  CustomTextForm(
-                    labelText: "Password",
-                    controller: registerController.passwordController,
-                    icon: Icon(Icons.lock_rounded),
-                    validator: registerController.validatePass,
-                    isPassword: true,
-                  ),
-                  SizedBox(
-                    height: 20.0,
-                  ),
-                  //todo: login button
-                  Button1(
-                    labelText: "Sign up",
-                    onPressed: () {
-                      registerController.validateSignUp();
-                      print("Sign up");
-                    },
-                  ),
-                  SizedBox(
-                    height: 40.0,
-                  ),
-                  Text(
-                    "Or",
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  HorizontalLine(),
-                  CustomRichText(
-                    "Already have an account?",
-                    " Sign in",
-                    () => Get.offAll(() => LoginScreen()),
-                  )
-                ],
-              ),
+                ),
+                HorizontalLine(),
+                CustomRichText(
+                  "Already have an account?",
+                  " Sign in",
+                  () => Get.offAll(() => LoginScreen()),
+                )
+              ],
             ),
           ),
         ),

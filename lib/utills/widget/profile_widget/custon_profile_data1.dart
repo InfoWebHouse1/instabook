@@ -3,11 +3,13 @@
 import 'package:flutter/material.dart';
 
 class ProfileData1 extends StatelessWidget {
-  const ProfileData1({Key? key, this.postCount, this.followerCount, this.followingCount,}) : super(key: key);
+  const ProfileData1({Key? key, this.postCount, this.followerCount, this.followingCount,required this.color}) : super(key: key);
 
   final String? postCount;
   final String? followerCount;
   final String? followingCount;
+  final Color color;
+
   @override
   Widget build(BuildContext context) {
     return Row(
@@ -21,6 +23,7 @@ class ProfileData1 extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.6,
                 fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
             Text(
@@ -28,6 +31,7 @@ class ProfileData1 extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.6,
                 fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
           ],
@@ -42,6 +46,7 @@ class ProfileData1 extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.6,
                 fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
             Text(
@@ -49,6 +54,7 @@ class ProfileData1 extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.6,
                 fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
           ],
@@ -63,6 +69,7 @@ class ProfileData1 extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.6,
                 fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
             Text(
@@ -70,6 +77,7 @@ class ProfileData1 extends StatelessWidget {
               style: TextStyle(
                 fontSize: 14.6,
                 fontWeight: FontWeight.bold,
+                color: color,
               ),
             ),
           ],

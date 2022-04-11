@@ -10,39 +10,42 @@ class MainHomeScreen extends StatelessWidget {
   final homeController = Get.put(MainHomeController());
   final authController = Get.put(AuthController());
 
+
   @override
   Widget build(BuildContext context) {
+    homeController.update_counter;
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
         onTap: homeController.onItemTapped,
         height: 50,
-        backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.5),
+        backgroundColor: Theme.of(context).backgroundColor,
         color: Theme.of(context).colorScheme.primary,
+        index: homeController.selected_index.value,
         items: [
           Icon(
             Icons.home,
             size: 25,
-            color: Colors.white,
+            color: Theme.of(context).iconTheme.color,
           ),
           Icon(
             Icons.search,
             size: 25,
-            color: Colors.white,
+            color: Theme.of(context).iconTheme.color,
           ),
           Icon(
             Icons.add_a_photo,
             size: 25,
-            color: Colors.white,
+            color: Theme.of(context).iconTheme.color,
           ),
           Icon(
             Icons.chat_bubble_outline_rounded,
             size: 25,
-            color: Colors.white,
+            color: Theme.of(context).iconTheme.color,
           ),
           Icon(
             Icons.person,
             size: 25,
-            color: Colors.white,
+            color: Theme.of(context).iconTheme.color,
           ),
         ],
         animationDuration: Duration(milliseconds: 200),

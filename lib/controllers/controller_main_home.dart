@@ -15,6 +15,12 @@ class MainHomeController extends GetxController{
   var update_counter = "".obs;
   var selected_index = 0.obs;
 
+  @override
+  void onInit() {
+    super.onInit();
+    update1();
+  }
+
   final List<Widget> body_view = [
     HomeScreen(),
     ExploreScreen(),
@@ -33,6 +39,7 @@ class MainHomeController extends GetxController{
     }
     update_counter.value = "cont_pr_list-${DateTime.now()} ${DateTime.now().microsecond} $updaters";
   }
+
 
   void onItemTapped(int index){
     selected_index.value = index;
