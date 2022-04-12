@@ -38,3 +38,5 @@ CustomRichText(String firstText, String lastText, Function()? onPressed) {
     ),
   );
 }
+
+

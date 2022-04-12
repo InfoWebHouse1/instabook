@@ -4,6 +4,8 @@ import 'package:get/get.dart';
 
 class GeneralController extends GetxController{
   var isThemeDark = false.obs;
+  var isThemeDarkGroup;
+  var groupVal = -1.obs;
 
   var updaters = Queue();
   var update_counter = "".obs;

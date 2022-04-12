@@ -6,6 +6,7 @@ import 'package:instabook/controllers/controller_user.dart';
 import 'package:instabook/model/model_user.dart';
 import 'package:instabook/services/services_database.dart';
 import 'package:instabook/view/home.dart';
+import 'package:instabook/view/screen_login.dart';
 
 class AuthController extends GetxController {
   final userController = Get.put(UserController());
@@ -97,7 +98,7 @@ class AuthController extends GetxController {
         user.phoneNo = authResult.user!.phoneNumber;
         UserDataBase().createNewUser(user);
       }
-      await Get.offAll(() => MainHomeScreen());
+      await Get.to(() => MainHomeScreen());
       retVal = "Success";
     } catch (e) {
       print(e);
@@ -121,7 +122,7 @@ class AuthController extends GetxController {
   void signOut() async {
     try {
       await auth.signOut();
-      Get.back();
+      Get.offAll(() => LoginScreen());
       Get.find<UserController>().clear();
     } catch (e) {
       print(e);

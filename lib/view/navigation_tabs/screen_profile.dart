@@ -32,18 +32,18 @@ class ProfileScreen extends StatelessWidget {
           FontWeight.bold,
           30.5,
         ),
-        leading: GetBuilder<GeneralController>(
-          builder: (_) {
-            return Switch(
-              activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
-              value: generalController.isThemeDark.value,
-              onChanged: (state) {
-                print("State $state");
-                generalController.changeTheme(state);
-              },
-            );
-          },
-        ),
+        // leading: GetBuilder<GeneralController>(
+        //   builder: (_) {
+        //     return Switch(
+        //       activeColor: Theme.of(context).colorScheme.secondary.withOpacity(0.5),
+        //       value: generalController.isThemeDark.value,
+        //       onChanged: (state) {
+        //         print("State $state");
+        //         generalController.changeTheme;
+        //       },
+        //     );
+        //   },
+        // ),
         centerTitle: true,
         actions: [
           IconButton(
