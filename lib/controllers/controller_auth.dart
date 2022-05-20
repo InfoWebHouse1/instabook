@@ -44,6 +44,7 @@ class AuthController extends GetxController {
     String? password,
     String? bio,
     String? phoneNo,
+      String? timeStamp,
   ) async {
     try {
       UserCredential authResult = await auth.createUserWithEmailAndPassword(
@@ -58,6 +59,7 @@ class AuthController extends GetxController {
         gender: gender!,
         bio: bio!,
         phoneNo: phoneNo!,
+        //timeStamp: timeStamp,
       );
       if (authResult.additionalUserInfo!.isNewUser) {
         await UserDataBase().createNewUser(userModel);
@@ -96,6 +98,9 @@ class AuthController extends GetxController {
         user.email = authResult.user!.email;
         user.imageUrl = authResult.user!.photoURL;
         user.phoneNo = authResult.user!.phoneNumber;
+        //user.timeStamp = DateTime.now().toString();
+        user.bio = "";
+        user.gender = "";
         UserDataBase().createNewUser(user);
       }
       await Get.to(() => MainHomeScreen());

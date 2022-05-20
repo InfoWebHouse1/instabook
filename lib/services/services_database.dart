@@ -8,12 +8,14 @@ class UserDataBase {
   Future<bool?> createNewUser(UserModel user) async {
     try {
       await firestore.collection("Users").doc(user.id).set({
+        "id": user.id,
         "name": user.name,
         "email": user.email,
         "imageUrl": user.imageUrl,
         "gender": user.gender,
         "bio": user.bio,
         "phoneNo": user.phoneNo,
+        //"timeStamp": user.timeStamp,
       });
       return true;
     } catch (e) {

@@ -72,6 +72,7 @@ class RegisterController extends GetxController{
         passwordController.text,
         bioController.text,
         phoneNoController.text,
+        DateTime.now().toString(),
       );
     } else {
       Get.snackbar(

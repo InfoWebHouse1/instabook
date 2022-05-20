@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_constructors, unnecessary_string_interpolations
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -12,17 +13,10 @@ class CustomProfileImage extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       backgroundColor: Theme.of(context).colorScheme.primary,
-      radius: 43,
-      child: ClipOval(
-        child: SizedBox(
-          width: 80,
-          height: 80,
-          child: Image.network(
-                  "$imageVal",
-                  fit: BoxFit.cover,
-                ),
-        ),
+      backgroundImage: CachedNetworkImageProvider(
+        "$imageVal"
       ),
+      radius: 43,
     );
   }
 }
