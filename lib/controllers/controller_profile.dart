@@ -10,7 +10,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:instabook/controllers/controller_auth.dart';
 import 'package:instabook/services/services_database.dart';
 import 'package:instabook/view/home.dart';
-import 'package:instabook/view/navigation_tabs/screen_profile.dart';
 import 'package:path/path.dart';
 
 class ProfileController extends GetxController {

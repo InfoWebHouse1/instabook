@@ -4,8 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instabook/view/screen_edit_profile_screen.dart';
 
-class CustomProfileEditButton extends StatelessWidget {
-  const CustomProfileEditButton({Key? key}) : super(key: key);
+class CustomButton extends StatelessWidget {
+  final String name;
+  final Function() onPressed;
+  final controller;
+  const CustomButton({Key? key, required this.name, required this.onPressed, this.controller}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,14 +21,15 @@ class CustomProfileEditButton extends StatelessWidget {
             borderRadius: BorderRadius.circular(5.0),
           ),
           elevation: 3,
-          color: Colors.white,
+          color: Theme.of(context).colorScheme.secondary.withOpacity(0.9),
           splashColor: Theme.of(context).colorScheme.secondary.withOpacity(0.2),
-          onPressed: () => Get.to(() => EditProfileScreen()),
+          onPressed: onPressed,
           child: Center(
               child: Text(
-            "Edit Profile",
+                name,
             style: TextStyle(
               fontWeight: FontWeight.bold,
+              color: controller.isThemeDark.value ? Colors.white : Colors.black,
             ),
           )),
         ),

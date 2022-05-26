@@ -17,7 +17,7 @@ class ExploreScreen extends StatelessWidget {
         "${exploreController.update_counter} ${generalController.update_counter}");
     return Obx(
       () => Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor,
+        backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.5),
         appBar: buildSearchUser(context),
         body: buildBody(context),
       ),
@@ -72,27 +72,24 @@ class ExploreScreen extends StatelessWidget {
 
   buildBoContent(context) {
     final orientation = MediaQuery.of(context).orientation;
-    return Container(
-      child: Center(
-        child: ListView(
-          shrinkWrap: true,
-          children: [
-            Image.asset(
-              "assets/images/search_user.jpg",
-              height: orientation == Orientation.portrait ? 300 : 200,
+    return Center(
+      child: ListView(
+        shrinkWrap: true,
+        children: [
+          Image.asset(
+            "assets/images/search_user.png",
+            height: orientation == Orientation.portrait ? 300 : 200,
+          ),
+          Text(
+            "Find Users",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 40.0,
+              fontWeight: FontWeight.bold,
+              color: Theme.of(context).colorScheme.secondary.withOpacity(0.8),
             ),
-            Text(
-              "Find Users",
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 50.0,
-                fontWeight: FontWeight.w600,
-                fontStyle: FontStyle.italic,
-                color: Theme.of(context).colorScheme.primary,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

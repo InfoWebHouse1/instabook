@@ -12,6 +12,7 @@ import 'package:instabook/utills/widget/profile_widget/custom_profile_data2.dart
 import 'package:instabook/utills/widget/profile_widget/custom_profile_edit_button.dart';
 import 'package:instabook/utills/widget/profile_widget/custom_profile_image.dart';
 import 'package:instabook/utills/widget/profile_widget/custon_profile_data1.dart';
+import 'package:instabook/view/screen_edit_profile_screen.dart';
 import 'package:instabook/view/screen_setting_profile.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -23,7 +24,7 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).backgroundColor,
+      backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.5),
       appBar: AppBar(
         automaticallyImplyLeading: false,
         title: CustomText(
@@ -63,7 +64,7 @@ class ProfileScreen extends StatelessWidget {
     print("${authController.update_counter} ${profileController.update_counter} ");
     return SafeArea(
       child: Container(
-        decoration: BoxDecoration(color: Theme.of(context).backgroundColor),
+        decoration: BoxDecoration(color: Theme.of(context).backgroundColor.withOpacity(0.5)),
         child: SingleChildScrollView(
           physics: BouncingScrollPhysics(),
           child: Column(
@@ -176,7 +177,11 @@ class ProfileScreen extends StatelessWidget {
                     SizedBox(
                       width: Get.width,
                       child: Center(
-                        child: CustomProfileEditButton(),
+                        child: CustomButton(
+                          controller: generalController,
+                          name: "Edit Profile",
+                          onPressed: () => Get.to(() => EditProfileScreen()),
+                        ),
                       ),
                     ),
                   ],
@@ -193,7 +198,7 @@ class ProfileScreen extends StatelessWidget {
                 width: Get.width,
                 height: Get.height,
                 decoration: BoxDecoration(
-                  color: Theme.of(context).backgroundColor,
+                  color: Theme.of(context).backgroundColor.withOpacity(0.5),
                 ),
               ),
             ],

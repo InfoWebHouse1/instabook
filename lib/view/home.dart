@@ -18,8 +18,8 @@ class MainHomeScreen extends StatelessWidget {
       bottomNavigationBar: CurvedNavigationBar(
         onTap: homeController.onItemTapped,
         height: 50,
-        backgroundColor: Theme.of(context).backgroundColor,
-        color: Theme.of(context).colorScheme.primary,
+        backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.5),
+        color: Theme.of(context).colorScheme.primary.withOpacity(0.9),
         index: homeController.selected_index.value,
         items: [
           Icon(
