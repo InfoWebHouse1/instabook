@@ -31,6 +31,7 @@ class UserModel {
     phoneNo = documentSnapshot.get("phoneNo");
     //timeStamp = documentSnapshot.get("timeStamp");
   }
+
   Map toMap(UserModel userModel){
     var data = Map<String, dynamic>();
     data["id"] = userModel.id;

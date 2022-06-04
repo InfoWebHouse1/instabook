@@ -35,227 +35,237 @@ class EditProfileScreen extends StatelessWidget {
           onPressed: () => Get.back(),
         ),
       ),
-      body: buildBody(context),
+      body: Obx(
+        () => buildBody(context),
+      ),
     );
   }
 
   buildBody(BuildContext context) {
     print("${profileController.update_counter}");
     return SafeArea(
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
-        onTap: () => FocusScope.of(context).unfocus(),
-        child: Padding(
-          padding: EdgeInsets.all(10.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              //todo: profile picture
-              GetBuilder<ProfileController>(
-                init: profileController,
-                builder: (_) => SizedBox(
-                  child: profileController.newProfilePic != null
-                      ? CircleAvatar(
-                          backgroundColor: Theme.of(context).colorScheme.primary,
-                          radius: 43,
-                          child: ClipOval(
-                            child: SizedBox(
-                              width: 80,
-                              height: 80,
-                              child: Image.file(profileController.newProfilePic!),
+      child: profileController.showProgressIndicator.value
+          ? GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Padding(
+                padding: EdgeInsets.all(10.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    //todo: profile picture
+                    GetBuilder<ProfileController>(
+                      init: profileController,
+                      builder: (_) => SizedBox(
+                        child: profileController.newProfilePic != null
+                            ? CircleAvatar(
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.primary,
+                                radius: 43,
+                                child: ClipOval(
+                                  child: SizedBox(
+                                    width: 80,
+                                    height: 80,
+                                    child: Image.file(
+                                        profileController.newProfilePic!),
+                                  ),
+                                ),
+                              )
+                            : CustomAssetsProfileImage(
+                                imageVal: "assets/images/default_image.png",
+                              ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: profileController.getImage1,
+                        child: Text(
+                          "Change Profile Picture",
+                          style: TextStyle(
+                              color: Theme.of(context).colorScheme.primary,
+                              fontWeight: FontWeight.bold),
+                        ),
+                      ),
+                    ),
+                    //todo: username field change
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 5,
+                        bottom: 5,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Username",
+                              style: TextStyle(
+                                fontSize: 14.6,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                           ),
-                        )
-                      : CustomAssetsProfileImage(
-                          imageVal: "assets/images/default_image.png",
-                        ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GestureDetector(
-                  onTap: profileController.getImage1,
-                  child: Text(
-                    "Change Profile Picture",
-                    style: TextStyle(color: Theme.of(context).colorScheme.primary, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ),
-              //todo: username field change
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  top: 5,
-                  bottom: 5,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        "Username",
-                        style: TextStyle(
-                          fontSize: 14.6,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: TextFormField(
-                        controller: profileController.updateNameController,
-                        cursorColor: Colors.transparent,
-                        decoration: InputDecoration(
-                          hintText: "Username",
-                          hintStyle: TextStyle(
-                            fontSize: 14.6,
-                          ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              //todo: email field change
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  top: 5,
-                  bottom: 5,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        "Email",
-                        style: TextStyle(
-                          fontSize: 14.6,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      flex: 2,
-                      child: GetX<UserController>(initState: (_) async {
-                        Get.find<UserController>().user = await UserDataBase().getUser(authController.user!.uid);
-                      }, builder: (_) {
-                        if (_.user!.email != null) {
-                          return Text(
-                            "${_.user!.email}",
-                            style: TextStyle(
-                              fontSize: 14.6,
+                          Expanded(
+                            flex: 2,
+                            child: TextFormField(
+                              controller:
+                                  profileController.updateNameController,
+                              cursorColor: Colors.transparent,
+                              decoration: InputDecoration(
+                                hintText: "Username",
+                                hintStyle: TextStyle(
+                                  fontSize: 14.6,
+                                ),
+                              ),
                             ),
-                          );
-                        } else {
-                          return SizedBox();
-                        }
-                      }),
-                    ),
-                  ],
-                ),
-              ),
-              //todo: Bio field change
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  top: 5,
-                  bottom: 5,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        "Bio",
-                        style: TextStyle(
-                          fontSize: 14.6,
-                          fontWeight: FontWeight.bold,
-                        ),
+                          )
+                        ],
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: TextFormField(
-                        controller: profileController.updateBioController,
-                        keyboardType: TextInputType.multiline,
-                        maxLines: 3,
-                        maxLength: 50,
-                        cursorColor: Colors.transparent,
-                        decoration: InputDecoration(
-                          hintText: "Bio",
-                          hintStyle: TextStyle(
-                            fontSize: 14.6,
+                    //todo: email field change
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 5,
+                        bottom: 5,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Email",
+                              style: TextStyle(
+                                fontSize: 14.6,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              //todo: Phone No field change
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  top: 5,
-                  bottom: 5,
-                ),
-                child: Row(
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Text(
-                        "Phone No",
-                        style: TextStyle(
-                          fontSize: 14.6,
-                          fontWeight: FontWeight.bold,
-                        ),
+                          Expanded(
+                            flex: 2,
+                            child: GetX<UserController>(initState: (_) async {
+                              Get.find<UserController>().user =
+                                  await UserDataBase()
+                                      .getUser(authController.user!.uid);
+                            }, builder: (_) {
+                              if (_.user!.email != null) {
+                                return Text(
+                                  "${_.user!.email}",
+                                  style: TextStyle(
+                                    fontSize: 14.6,
+                                  ),
+                                );
+                              } else {
+                                return SizedBox();
+                              }
+                            }),
+                          ),
+                        ],
                       ),
                     ),
-                    Expanded(
-                      flex: 2,
-                      child: TextFormField(
-                        controller: profileController.updatePhnController,
-                        cursorColor: Colors.transparent,
-                        keyboardType: TextInputType.number,
-                        decoration: InputDecoration(
-                          hintText: "Phone No",
-                          hintStyle: TextStyle(
-                            fontSize: 14.6,
-                          ),
-                        ),
+                    //todo: Bio field change
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 5,
+                        bottom: 5,
                       ),
-                    )
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Bio",
+                              style: TextStyle(
+                                fontSize: 14.6,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: TextFormField(
+                              controller: profileController.updateBioController,
+                              keyboardType: TextInputType.multiline,
+                              maxLines: 3,
+                              maxLength: 50,
+                              cursorColor: Colors.transparent,
+                              decoration: InputDecoration(
+                                hintText: "Bio",
+                                hintStyle: TextStyle(
+                                  fontSize: 14.6,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    //todo: Phone No field change
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 5,
+                        bottom: 5,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: Text(
+                              "Phone No",
+                              style: TextStyle(
+                                fontSize: 14.6,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: TextFormField(
+                              controller: profileController.updatePhnController,
+                              cursorColor: Colors.transparent,
+                              keyboardType: TextInputType.number,
+                              decoration: InputDecoration(
+                                hintText: "Phone No",
+                                hintStyle: TextStyle(
+                                  fontSize: 14.6,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    //todo: Gender field change
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 10,
+                        right: 10,
+                        top: 5,
+                        bottom: 5,
+                      ),
+                      child: EditGenderButton(),
+                    ),
+                    //todo: Save Button
+                    Button1(
+                      labelText: "Save",
+                      onPressed: () {
+                        profileController.saveData();
+                        print("Save");
+                      },
+                    ),
+                    Spacer(),
                   ],
                 ),
               ),
-              //todo: Gender field change
-              Padding(
-                padding: const EdgeInsets.only(
-                  left: 10,
-                  right: 10,
-                  top: 5,
-                  bottom: 5,
-                ),
-                child: EditGenderButton(),
-              ),
-              //todo: Save Button
-              Button1(
-                  labelText: "Save",
-                  onPressed: () {
-                    profileController.saveData();
-                    print("Save");
-                  },
-                ),
-              Spacer(),
-            ],
-          ),
-        ),
-      ),
+            ) : Center(child: CircularProgressIndicator()),
     );
   }
 }

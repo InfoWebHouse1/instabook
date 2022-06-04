@@ -106,6 +106,7 @@ class PostScreen extends StatelessWidget {
                 if (_.user!.imageUrl != "") {
                   return CustomProfileImage(
                     imageVal: "${_.user!.imageUrl}",
+                    radius: 30,
                   );
                 } else {
                   return CustomAssetsProfileImage(

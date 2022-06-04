@@ -4,15 +4,17 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:instabook/controllers/controller_auth.dart';
 import 'package:instabook/model/model_user.dart';
 
 class ExploreController extends GetxController {
+  final authController = Get.put(AuthController());
   final userRef = FirebaseFirestore.instance.collection("Users");
   final firebaseFirestore = FirebaseFirestore.instance;
   QuerySnapshot? snapshot;
 
   var isExecuted = false.obs;
-  User? currentUser = FirebaseAuth.instance.currentUser;
+  //User? currentUser = FirebaseAuth.instance.currentUser;
   List<UserModel> userList = <UserModel>[].obs;
   Future<QuerySnapshot>? searchResult;
   TextEditingController searchController = TextEditingController();
@@ -54,13 +56,13 @@ class ExploreController extends GetxController {
     return userRef.where("name", isEqualTo: queryString).get();
   }
 
-  Future<List<UserModel>> fetchAllUsers(User? currentUser) async {
+  Future<List<UserModel>> fetchAllUsers() async {
     List<UserModel> list = <UserModel>[];
 
     QuerySnapshot querySnapshot =
         await firebaseFirestore.collection("Users").get();
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].id != currentUser!.uid) {
+      if (querySnapshot.docs[i].id != authController.user!.uid) {
         list.add(UserModel.fromMap(
             querySnapshot.docs[i].data() as Map<String, dynamic>));
       }
@@ -69,7 +71,7 @@ class ExploreController extends GetxController {
   }
 
   dataUpdate() {
-    fetchAllUsers(currentUser!).then(
+    fetchAllUsers().then(
       (List<UserModel> list) {
         userList = list;
         update();

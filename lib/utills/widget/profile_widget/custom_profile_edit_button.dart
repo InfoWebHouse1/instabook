@@ -13,7 +13,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: Get.width * 0.8,
+      width: Get.width * 0.5,
       child: Padding(
         padding: const EdgeInsets.only(top: 5.0, bottom: 5.0),
         child: MaterialButton(

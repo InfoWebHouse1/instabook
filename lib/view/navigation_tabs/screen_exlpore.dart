@@ -16,10 +16,13 @@ class ExploreScreen extends StatelessWidget {
     print(
         "${exploreController.update_counter} ${generalController.update_counter}");
     return Obx(
-      () => Scaffold(
-        backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.5),
-        appBar: buildSearchUser(context),
-        body: buildBody(context),
+      () => GestureDetector(
+        onTap: () => FocusScope.of(context).unfocus(),
+        child: Scaffold(
+          backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.5),
+          appBar: buildSearchUser(context),
+          body: buildBody(context),
+        ),
       ),
     );
   }

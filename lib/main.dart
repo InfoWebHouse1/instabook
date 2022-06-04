@@ -1,4 +1,6 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -6,16 +8,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:instabook/binding/binding_auth.dart';
 import 'package:instabook/controllers/controller_auth.dart';
 import 'package:instabook/controllers/controller_general.dart';
+import 'package:instabook/services/service_sharedPreferecnce.dart';
 import 'package:instabook/utills/root.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:instabook/utills/utilities.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async{
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: kPrimaryLight.withOpacity(0.5), // status bar color
   ));
   WidgetsFlutterBinding.ensureInitialized();
+  await UseSimplePreference.init();
   await Firebase.initializeApp().then((value) => Get.put(AuthController()));
+  FirebaseFirestore.instance.settings;
   runApp(MyApp());
 }
 

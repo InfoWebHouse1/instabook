@@ -2,8 +2,8 @@
 
 import 'package:flutter/material.dart';
 
-class ProfileData2 extends StatelessWidget {
-  const ProfileData2({
+class MainProfileData extends StatelessWidget {
+  const MainProfileData({
     Key? key,
     required this.width,
     required this.text,

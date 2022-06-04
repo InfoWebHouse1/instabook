@@ -1,8 +1,11 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, prefer_const_constructors
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+
+import 'widget/profile_widget/custom_profile_image.dart';
 
 var kPrimaryLight = const Color(0xFF64D8CB);
 var kPrimaryDark = const Color(0xFF00766C);
@@ -12,11 +15,11 @@ var kBackgroundDark = const Color(0xFF4B636E);
 var kWhiteColor = Colors.white;
 var kBlackColor = Colors.black;
 
-
 CustomText(String text, Color color, FontWeight fontWeight, double fontSize) {
   return Text(
     text,
-    style: GoogleFonts.cookie(color: color, fontWeight: fontWeight, fontSize: fontSize),
+    style: GoogleFonts.cookie(
+        color: color, fontWeight: fontWeight, fontSize: fontSize),
   );
 }
 
@@ -38,5 +41,4 @@ CustomRichText(String firstText, String lastText, Function()? onPressed) {
     ),
   );
 }
-
 

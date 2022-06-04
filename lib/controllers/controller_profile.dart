@@ -18,9 +18,10 @@ class ProfileController extends GetxController {
   final updatePhnController = TextEditingController();
   final updateGenderController = "".obs;
 
-  final authController = Get.put(AuthController());
-  var showProgressIndicator = false.obs;
 
+  var isProfileLoading = false.obs;
+
+  var showProgressIndicator = false.obs;
   var selectedGenderIndex = 0.obs;
   List<String> genderVal = ["", "Male", "Female"];
 
@@ -40,12 +41,6 @@ class ProfileController extends GetxController {
       }
     }
     update_counter.value = "cont_pr_list-${DateTime.now()} ${DateTime.now().microsecond} $updaters";
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    showProgressIndicator.value = false;
   }
 
   // Future<XFile?> getImage() async {
@@ -87,18 +82,23 @@ class ProfileController extends GetxController {
 
   saveData() async {
     if (newProfilePic != null) {
+      showProgressIndicator.value = false;
       uploadImage();
     }
     if (updateNameController.text != "") {
+      showProgressIndicator.value = false;
       await UserDataBase().updateProfileName(updateNameController.text);
     }
     if (updateBioController.text != "") {
+      showProgressIndicator.value = false;
       await UserDataBase().updateProfileBio(updateBioController.text);
     }
     if (updatePhnController.text != "") {
+      showProgressIndicator.value = false;
       await UserDataBase().updateProfilePhn(updatePhnController.text);
     }
     if (updateGenderController.value != "") {
+      showProgressIndicator.value = false;
       await UserDataBase().updateProfileGender(updateGenderController.value);
     }
     update();

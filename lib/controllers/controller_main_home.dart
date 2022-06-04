@@ -4,6 +4,8 @@ import 'dart:collection';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:instabook/controllers/controller_auth.dart';
+import 'package:instabook/services/services_database.dart';
 import 'package:instabook/view/navigation_tabs/screen_exlpore.dart';
 import 'package:instabook/view/navigation_tabs/screen_home2.dart';
 import 'package:instabook/view/navigation_tabs/screen_notification.dart';
