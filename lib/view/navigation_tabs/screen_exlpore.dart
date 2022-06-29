@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:instabook/controllers/controller_explore.dart';
 import 'package:instabook/controllers/controller_general.dart';
 import 'package:instabook/utills/utilities.dart';
+import 'package:instabook/view/navigation_tabs/screen_profile.dart';
 
 class ExploreScreen extends StatelessWidget {
   final generalController = Get.put(GeneralController());
@@ -30,7 +31,7 @@ class ExploreScreen extends StatelessWidget {
   buildBody(context) {
     return exploreController.isExecuted.value
         ? buildSearchResults()
-        : buildBoContent(context);
+        : buildBodyContent(context);
   }
 
   buildSearchUser(context) {
@@ -73,7 +74,7 @@ class ExploreScreen extends StatelessWidget {
     );
   }
 
-  buildBoContent(context) {
+  buildBodyContent(context) {
     final orientation = MediaQuery.of(context).orientation;
     return Center(
       child: ListView(
@@ -110,7 +111,7 @@ class ExploreScreen extends StatelessWidget {
             String email = data.get("email");
             var emailFirst = email.split("@");
             return GestureDetector(
-              onTap: () => print(emailFirst.first),
+              onTap: () => Get.to(() => ProfileScreen(currentUserId: data.get("id"),)),
               child: Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary.withOpacity(0.4),

@@ -38,7 +38,7 @@ class MainHomeScreen extends StatelessWidget {
             color: Theme.of(context).iconTheme.color,
           ),
           Icon(
-            Icons.chat_bubble_outline_rounded,
+            Icons.notifications_active_outlined,
             size: 25,
             color: Theme.of(context).iconTheme.color,
           ),

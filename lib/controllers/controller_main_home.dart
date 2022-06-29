@@ -2,6 +2,8 @@
 
 import 'dart:collection';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instabook/controllers/controller_auth.dart';
@@ -24,11 +26,11 @@ class MainHomeController extends GetxController{
   }
 
   final List<Widget> body_view = [
-    HomeScreen(),
+    HomeScreen(currentUserId: FirebaseAuth.instance.currentUser?.uid,),
     ExploreScreen(),
     PostScreen(),
-    NotificationScreen(),
-    ProfileScreen(),
+    NotificationScreen(currentUserid: FirebaseAuth.instance.currentUser?.uid,),
+    ProfileScreen(currentUserId: FirebaseAuth.instance.currentUser?.uid,),
   ];
 
   update1({from: ""}) {

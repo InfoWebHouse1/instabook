@@ -32,8 +32,8 @@ class UserModel {
     //timeStamp = documentSnapshot.get("timeStamp");
   }
 
-  Map toMap(UserModel userModel){
-    var data = Map<String, dynamic>();
+  Map toMap(UserModel userModel) {
+    var data = <String, dynamic>{};
     data["id"] = userModel.id;
     data["name"] = userModel.name;
     data["email"] = userModel.email;
@@ -44,7 +44,7 @@ class UserModel {
     return data;
   }
 
-  UserModel.fromMap(Map<String, dynamic> mapData){
+  UserModel.fromMap(Map<String, dynamic> mapData) {
     id = mapData["id"];
     name = mapData["name"];
     email = mapData["email"];

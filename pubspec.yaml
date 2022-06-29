@@ -55,6 +55,7 @@ dependencies:
   curved_navigation_bar: ^1.0.3
   shared_preferences: ^2.0.13
   lottie: ^1.2.2
+  cloud_functions: ^3.2.16
 
 dev_dependencies:
   flutter_test:

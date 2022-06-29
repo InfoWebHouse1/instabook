@@ -9,8 +9,10 @@ import 'package:get/get.dart';
 import 'package:instabook/controllers/controller_general.dart';
 import 'package:instabook/controllers/controller_post.dart';
 import 'package:instabook/controllers/controller_user.dart';
+import 'package:instabook/model/model_user.dart';
 import 'package:instabook/services/service_sharedPreferecnce.dart';
 import 'package:instabook/services/services_database.dart';
+import 'package:instabook/utills/utilities.dart';
 import 'package:instabook/utills/widget/profile_widget/custom_main_profile_data.dart';
 import 'package:instabook/utills/widget/profile_widget/custom_profile_image.dart';
 import 'package:instabook/view/screen_comment.dart';
@@ -76,7 +78,14 @@ class MainProfilePosts extends StatelessWidget {
           buildPostHeader(),
           buildPostImage(),
           buildPostFooter(),
-          Divider(),
+          Container(
+            padding: const EdgeInsets.only(top: 8.0),
+            color: Theme.of(context).backgroundColor,
+            child: Divider(
+              color: Colors.grey,
+              height: 3.0,
+            ),
+          ),
         ],
       ),
     );
@@ -183,44 +192,121 @@ class MainProfilePosts extends StatelessWidget {
   }
 
   buildPostHeader() {
-    return ListTile(
-      leading: GetX<UserController>(initState: (_) async {
-        Get.find<UserController>().user = await UserDataBase().getUser(ownerID);
-      }, builder: (_) {
-        if (_.user!.imageUrl != "") {
-          return CustomProfileImage(
-            imageVal: "${_.user!.imageUrl}",
-            radius: 20,
-          );
-        } else {
-          return CustomAssetsProfileImage(
-            imageVal: "assets/images/default_image.png",
-          );
-        }
-      }),
-      title: MainProfileData(
-        width: Get.width,
-        text: userName,
-        fontSize: 18.4,
-        hasLine: false,
-        fontWeight: FontWeight.bold,
-        color: Colors.black,
-      ),
-      subtitle: MainProfileData(
-        width: Get.width,
-        text: location,
-        fontSize: 14.6,
-        hasLine: false,
-        fontWeight: FontWeight.bold,
-        color: Colors.grey,
-      ),
-      trailing: IconButton(
-          onPressed: () => print("Delete"),
-          icon: Icon(
-            Icons.delete_outline,
-            color: Colors.red,
-          )),
+    return StreamBuilder<DocumentSnapshot>(
+            stream: userRef.doc(ownerID).snapshots(),
+            builder: (context, snap) {
+              if (!snap.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+              UserModel user =
+                  UserModel.fromDocumentSnapshot(documentSnapshot: snap.data!);
+              bool isPostOwner = user.id == ownerID;
+              return ListTile(
+                leading: CustomProfileImage(
+                  imageVal: "${user.imageUrl}",
+                  radius: 20,
+                ),
+                title: MainProfileData(
+                  width: Get.width,
+                  text: userName,
+                  fontSize: 18.4,
+                  hasLine: false,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+                subtitle: MainProfileData(
+                  width: Get.width,
+                  text: location,
+                  fontSize: 14.6,
+                  hasLine: false,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey,
+                ),
+                trailing: isPostOwner
+                    ? IconButton(
+                        onPressed: () => handleDeletePost(),
+                        icon: Icon(
+                          Icons.delete_outline,
+                          color: Colors.red,
+                        ))
+                    : SizedBox(),
+              );
+            })
+        ;
+  }
+
+  handleDeletePost() {
+    return Get.defaultDialog(
+      title: "Do you want to remove this post?",
+      content: Text(""),
+      actions: [
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Theme.of(Get.context!).colorScheme.primary),
+          onPressed: () {
+            Get.back();
+            deletePost();
+          },
+          child: Text(
+            "Remove",
+            style: TextStyle(
+              color: generalController.isThemeDark.value
+                  ? Colors.white
+                  : Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 14.5,
+            ),
+          ),
+        ),
+        ElevatedButton(
+          style: ElevatedButton.styleFrom(
+              primary: Theme.of(Get.context!).colorScheme.secondary),
+          onPressed: () => Get.back(),
+          child: Text(
+            "Cancel",
+            style: TextStyle(
+              color: generalController.isThemeDark.value
+                  ? Colors.white
+                  : Colors.black,
+              fontWeight: FontWeight.bold,
+              fontSize: 14.5,
+            ),
+          ),
+        )
+      ],
     );
+  }
+
+  deletePost() async {
+    //todo: delete post itself
+    postRef.doc(ownerID).collection("user_posts").doc(postID).get().then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    //todo: delete upload image from the storage
+    storageReference.child("post_$postID.jpg").delete();
+    //todo: delete notification
+    QuerySnapshot notificationSnapshot = await notificationRef
+        .doc(ownerID)
+        .collection("feed_items")
+        .where("postId", isEqualTo: postID)
+        .get();
+    for (var doc in notificationSnapshot.docs) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    }
+    //todo: delete comments
+    QuerySnapshot commentSnapshot =
+        await commentRef.doc(postID).collection("users_comment").get();
+    for (var doc in commentSnapshot.docs) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    }
   }
 
   handleLikes() async {

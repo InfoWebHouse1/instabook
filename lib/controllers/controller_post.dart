@@ -13,6 +13,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:instabook/controllers/controller_auth.dart';
 import 'package:instabook/services/service_sharedPreferecnce.dart';
 import 'package:instabook/services/services_database.dart';
+import 'package:instabook/utills/utilities.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as Im;
 import 'package:uuid/uuid.dart';
@@ -38,7 +39,6 @@ class PostController extends GetxController {
   final ImagePicker picker = ImagePicker();
   final DateTime timeStamp = DateTime.now();
 
-  final Reference storageReference = FirebaseStorage.instance.ref();
 
   var updaters = Queue();
   var update_counter = "".obs;
@@ -129,12 +129,11 @@ class PostController extends GetxController {
     required String caption,
   }) async {
     var user = await UserDataBase().getUser(authController.user!.uid);
-    final postRef = FirebaseFirestore.instance.collection("posts");
     postRef.doc(user!.id).collection("user_posts").doc(_postID).set({
       "post_id": _postID,
       "owner_id": user.id,
       "userName": user.name,
-      "mediaUrl": user.imageUrl,
+      "mediaUrl": mediaURl,
       "location": location,
       "caption": caption,
       "timeStamp": timeStamp,
@@ -148,7 +147,6 @@ class PostController extends GetxController {
     required String mediaUrl,
   }) async {
     var user = await UserDataBase().getUser(authController.user!.uid);
-    final commentRef = FirebaseFirestore.instance.collection("comments");
     commentRef.doc(postId).collection("users_comment").add({
       "userId": ownerId,
       "userName": user!.name,
@@ -158,7 +156,6 @@ class PostController extends GetxController {
     });
     bool isNotPostOwner = user.id != ownerId;
     if (isNotPostOwner) {
-      final notificationRef = FirebaseFirestore.instance.collection("feed");
       notificationRef.doc(ownerId).collection("feed_items").add({
         "type": "comment",
         "commentData": commentController.text,
@@ -181,7 +178,6 @@ class PostController extends GetxController {
     var user = await UserDataBase().getUser(authController.user!.uid);
     bool isNotPostOwner = user!.id != ownerId;
     if (isNotPostOwner) {
-      final notificationRef = FirebaseFirestore.instance.collection("feed");
       notificationRef.doc(ownerId).collection("feed_items").doc(postId).set({
         "type": "like",
         "userName": user.name,
@@ -200,7 +196,6 @@ class PostController extends GetxController {
     var user = await UserDataBase().getUser(authController.user!.uid);
     bool isNotPostOwner = user!.id != ownerId;
     if (isNotPostOwner) {
-      final notificationRef = FirebaseFirestore.instance.collection("feed");
       notificationRef
           .doc(ownerId)
           .collection("feed_items")

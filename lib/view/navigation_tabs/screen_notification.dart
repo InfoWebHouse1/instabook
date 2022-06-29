@@ -7,11 +7,16 @@ import 'package:get/get.dart';
 import 'package:instabook/controllers/controller_auth.dart';
 import 'package:instabook/controllers/controller_general.dart';
 import 'package:instabook/utills/utilities.dart';
+import 'package:instabook/view/navigation_tabs/screen_profile.dart';
+import 'package:instabook/view/screen_full_post_screen.dart';
 import 'package:timeago/timeago.dart' as timeAgo;
 
 class NotificationScreen extends StatelessWidget {
+  final String? currentUserid;
+  NotificationScreen({Key? key, this.currentUserid}) : super(key: key);
   final generalController = Get.put(GeneralController());
   final authController = Get.put(AuthController());
+
 
   @override
   Widget build(BuildContext context) {
@@ -28,9 +33,8 @@ class NotificationScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: FirebaseFirestore.instance
-            .collection("feed")
-            .doc(authController.user!.uid)
+        stream: notificationRef
+            .doc(currentUserid)
             .collection("feed_items")
             .orderBy("timeStamp", descending: true)
             .limit(50)
@@ -45,7 +49,6 @@ class NotificationScreen extends StatelessWidget {
           for (var doc in snapshot.data!.docs) {
             notifyItem.add(NotificationItems.fromDocument(doc: doc));
           }
-
           return ListView(
             children: notifyItem,
           );
@@ -96,7 +99,12 @@ class NotificationItems extends StatelessWidget {
   configureMediaPreview() {
     if (type == "like" || type == "comment") {
       mediaPreview = GestureDetector(
-        onTap: () => print("showing image"),
+        onTap: () => Get.to(
+          () => FullPostScreen(
+            postId: postId,
+            userId: userId,
+          ),
+        ),
         child: SizedBox(
           height: 50,
           width: 50,
@@ -133,10 +141,14 @@ class NotificationItems extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.only(bottom: 2.0),
       child: Container(
-        color: Colors.white54,
+        color: Theme.of(context).colorScheme.secondary.withOpacity(0.3),
         child: ListTile(
           title: GestureDetector(
-            onTap: () => print("showing user profile"),
+            onTap: () => Get.to(
+              () => ProfileScreen(
+                currentUserId: userId.toString(),
+              ),
+            ),
             child: RichText(
               overflow: TextOverflow.ellipsis,
               text: TextSpan(

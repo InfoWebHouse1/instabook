@@ -2,6 +2,7 @@
 
 import 'dart:collection';
 import 'dart:io';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,25 +10,31 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:instabook/controllers/controller_auth.dart';
 import 'package:instabook/services/services_database.dart';
+import 'package:instabook/utills/utilities.dart';
 import 'package:instabook/view/home.dart';
 import 'package:path/path.dart';
 
 class ProfileController extends GetxController {
+  final authController = Get.put(AuthController());
+
   final updateNameController = TextEditingController();
   final updateBioController = TextEditingController();
   final updatePhnController = TextEditingController();
   final updateGenderController = "".obs;
 
-
   var isProfileLoading = false.obs;
-
+  var isFollowing = false.obs;
   var showProgressIndicator = false.obs;
   var selectedGenderIndex = 0.obs;
+  var followersCount = 0.obs;
+  var followingCount = 0.obs;
+
   List<String> genderVal = ["", "Male", "Female"];
 
   File? newProfilePic;
   final ImagePicker picker = ImagePicker();
   String? imageUrl;
+  final DateTime timeStamp = DateTime.now();
 
   var updaters = Queue();
   var update_counter = "".obs;
@@ -40,7 +47,8 @@ class ProfileController extends GetxController {
         updaters.removeFirst();
       }
     }
-    update_counter.value = "cont_pr_list-${DateTime.now()} ${DateTime.now().microsecond} $updaters";
+    update_counter.value =
+        "cont_pr_list-${DateTime.now()} ${DateTime.now().microsecond} $updaters";
   }
 
   // Future<XFile?> getImage() async {
@@ -48,7 +56,8 @@ class ProfileController extends GetxController {
   // }
 
   getImage1() async {
-    var image = await picker.pickImage(source: ImageSource.gallery, imageQuality: 20);
+    var image =
+        await picker.pickImage(source: ImageSource.gallery, imageQuality: 20);
     newProfilePic = File(image!.path);
     update();
     print("Image Path $newProfilePic");
@@ -61,9 +70,11 @@ class ProfileController extends GetxController {
 
   Future uploadImage() async {
     String filename = basename(newProfilePic!.path.split("/").last);
-    Reference reference = FirebaseStorage.instance.ref().child("dp_folder/$filename");
+    Reference reference =
+        FirebaseStorage.instance.ref().child("dp_folder/$filename");
     UploadTask uploadTask = reference.putFile(newProfilePic!);
-    TaskSnapshot taskSnapshot = await uploadTask.whenComplete(() => print("Picture Uploaded"));
+    TaskSnapshot taskSnapshot =
+        await uploadTask.whenComplete(() => print("Picture Uploaded"));
     imageUrl = await taskSnapshot.ref.getDownloadURL();
     await UserDataBase().updateProfilePic(imageUrl!.trim());
     print("Picture Uploaded $newProfilePic");
@@ -81,24 +92,20 @@ class ProfileController extends GetxController {
   }
 
   saveData() async {
+    showProgressIndicator.value = false;
     if (newProfilePic != null) {
-      showProgressIndicator.value = false;
       uploadImage();
     }
     if (updateNameController.text != "") {
-      showProgressIndicator.value = false;
       await UserDataBase().updateProfileName(updateNameController.text);
     }
     if (updateBioController.text != "") {
-      showProgressIndicator.value = false;
       await UserDataBase().updateProfileBio(updateBioController.text);
     }
     if (updatePhnController.text != "") {
-      showProgressIndicator.value = false;
       await UserDataBase().updateProfilePhn(updatePhnController.text);
     }
     if (updateGenderController.value != "") {
-      showProgressIndicator.value = false;
       await UserDataBase().updateProfileGender(updateGenderController.value);
     }
     update();
@@ -113,5 +120,91 @@ class ProfileController extends GetxController {
     );
   }
 
+  handleUnFollowUser({profileId}) async {
+    isFollowing.value = true;
+    var user = await UserDataBase().getUser(authController.user!.uid);
+    //todo: followers
+    followerRef
+        .doc(profileId)
+        .collection("userFollowers")
+        .doc(user!.id)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    //todo: following
+    followingRef
+        .doc(user.id)
+        .collection("userFollowing")
+        .doc(profileId)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+    //todo: push notification
+    notificationRef
+        .doc(profileId)
+        .collection("feed_items")
+        .doc(user.id)
+        .get()
+        .then((doc) {
+      if (doc.exists) {
+        doc.reference.delete();
+      }
+    });
+  }
 
+  checkIfFollowing({profileId}) async {
+    var user = await UserDataBase().getUser(authController.user!.uid);
+    DocumentSnapshot doc = await followerRef
+        .doc(profileId)
+        .collection("userFollowers")
+        .doc(user!.id)
+        .get();
+    isFollowing.value = doc.exists;
+    update();
+  }
+
+  getFollower({profileId}) async {
+    QuerySnapshot snapshot =
+        await followerRef.doc(profileId).collection("userFollowers").get();
+    followersCount.value = snapshot.docs.length;
+    update();
+  }
+
+  getFollowing({profileId}) async {
+    QuerySnapshot snapshot =
+        await followingRef.doc(profileId).collection("userFollowing").get();
+    followingCount.value = snapshot.docs.length;
+    update();
+  }
+
+  Future handleFollowUser({profileId}) async {
+    isFollowing.value = true;
+    var user = await UserDataBase().getUser(authController.user!.uid);
+    //todo: followers
+    followerRef.doc(profileId).collection("userFollowers").doc(user!.id).set({
+      'followedBy': user.id,
+      'followedTo': profileId,
+    });
+    //todo: following
+    followingRef
+        .doc(user.id)
+        .collection("userFollowing")
+        .doc(profileId)
+        .set({});
+    //todo: push notification
+    notificationRef.doc(profileId).collection("feed_items").doc(user.id).set({
+      "type": "follow",
+      "ownerId": profileId,
+      "userName": user.name,
+      "userId": user.id,
+      "userProfileImg": user.imageUrl,
+      "timeStamp": timeStamp,
+    });
+  }
 }

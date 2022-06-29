@@ -19,12 +19,16 @@ import 'package:instabook/utills/widget/profile_widget/custom_main_profile_posts
 import 'package:instabook/utills/widget/profile_widget/custom_profile_edit_button.dart';
 import 'package:instabook/utills/widget/profile_widget/custom_profile_image.dart';
 import 'package:instabook/view/screen_edit_profile_screen.dart';
+import 'package:instabook/view/screen_full_post_screen.dart';
 import 'package:instabook/view/screen_setting_profile.dart';
 
 class ProfileScreen extends StatelessWidget {
-  String? profileID;
+  final String? currentUserId;
 
-  ProfileScreen({Key? key, this.profileID}) : super(key: key);
+  ProfileScreen({
+    Key? key,
+    required this.currentUserId,
+  }) : super(key: key);
   final authController = Get.put(AuthController());
   final profileController = Get.put(ProfileController());
   final postController = Get.put(PostController());
@@ -34,35 +38,48 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    profileID = authController.user!.uid;
+    profileController.checkIfFollowing(profileId: currentUserId);
+    profileController.getFollower(profileId: currentUserId);
+    profileController.getFollowing(profileId: currentUserId);
+    bool isMainProfile = currentUserId == authController.user!.uid;
     return Scaffold(
       backgroundColor: Theme.of(context).backgroundColor.withOpacity(0.5),
       appBar: AppBar(
-        automaticallyImplyLeading: false,
         title: CustomText(
           "Profile",
           generalController.isThemeDark.value ? Colors.white : Colors.black,
           FontWeight.bold,
           30.5,
         ),
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: Icon(
+            Icons.arrow_back_ios,
+            color: generalController.isThemeDark.value
+                ? Colors.white
+                : Colors.black,
+          ),
+        ),
         centerTitle: true,
         actions: [
-          IconButton(
-            onPressed: () {
-              Get.to(() => ProfileSettingPage());
-            },
-            icon: Icon(Icons.settings),
-            color: Theme.of(context).iconTheme.color,
-          ),
+          isMainProfile
+              ? IconButton(
+                  onPressed: () {
+                    Get.to(() => ProfileSettingPage());
+                  },
+                  icon: Icon(Icons.settings),
+                  color: Theme.of(context).iconTheme.color,
+                )
+              : SizedBox(),
         ],
       ),
       body: SafeArea(
-        child: buildBody(context),
+        child: buildBody(context, isMainProfile),
       ),
     );
   }
 
-  buildBody(context) {
+  buildBody(context, isMainProfile) {
     print(
         "${authController.update_counter} ${profileController.update_counter} ${postController.update_counter}");
     return Container(
@@ -71,7 +88,7 @@ class ProfileScreen extends StatelessWidget {
       child: StreamBuilder<QuerySnapshot>(
         stream: firestore
             .collection("posts")
-            .doc(profileID)
+            .doc(authController.user!.uid)
             .collection("user_posts")
             .orderBy(
               "timeStamp",
@@ -91,23 +108,29 @@ class ProfileScreen extends StatelessWidget {
           return Column(
             children: [
               buildProfileHeader(
+                isMainProfile,
                 context: context,
                 postCount: snapshot.data!.docs.length,
                 follower: 0,
                 following: 0,
               ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.only(top: 8.0),
+                color: Theme.of(context).backgroundColor,
                 child: Divider(
                   color: Colors.grey,
                   height: 3.0,
                 ),
               ),
               Obx(
-                () => buildToggole(context),
+                () => Container(
+                  color: Theme.of(context).backgroundColor,
+                  child: buildToggole(context),
+                ),
               ),
-              Padding(
+              Container(
                 padding: const EdgeInsets.only(top: 8.0),
+                color: Theme.of(context).backgroundColor,
                 child: Divider(
                   color: Colors.grey,
                   height: 3.0,
@@ -115,7 +138,10 @@ class ProfileScreen extends StatelessWidget {
               ),
               Expanded(
                 child: Obx(
-                  () => buildPostOrientation(context, snapshot, posts),
+                  () => Container(
+                    color: Theme.of(context).backgroundColor,
+                    child: buildPostOrientation(context, snapshot, posts),
+                  ),
                 ),
               ),
             ],
@@ -166,7 +192,12 @@ class ProfileScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         var data = snapshot.data!.docs[index];
         return GestureDetector(
-          onTap: () => print("${data["post_id"]}"),
+          onTap: () => Get.to(
+            () => FullPostScreen(
+              postId: data["post_id"],
+              userId: data["owner_id"],
+            ),
+          ),
           child: CachedNetworkImage(
             imageUrl: '${data["mediaUrl"]}',
             fit: BoxFit.cover,
@@ -182,11 +213,20 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 
-  buildProfileHeader({context, postCount, follower, following}) {
-    return GetX<UserController>(initState: (_) async {
-      Get.find<UserController>().user = await UserDataBase().getUser(profileID);
-    }, builder: (_) {
-      if (_.user!.id == profileID) {
+  buildProfileHeader(isMainProfile, {context, postCount, follower, following}) {
+    return StreamBuilder<DocumentSnapshot>(
+      stream: FirebaseFirestore.instance
+          .collection("Users")
+          .doc(currentUserId)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        }
+        UserModel user =
+            UserModel.fromDocumentSnapshot(documentSnapshot: snapshot.data!);
         return Container(
           height: Get.height * 0.3,
           decoration: BoxDecoration(
@@ -218,7 +258,7 @@ class ProfileScreen extends StatelessWidget {
                     children: [
                       //todo: Profile Image
                       CustomProfileImage(
-                        imageVal: "${_.user!.imageUrl}",
+                        imageVal: "${user.imageUrl}",
                         radius: 40,
                       ),
                       //todo: profile post follower following
@@ -236,11 +276,19 @@ class ProfileScreen extends StatelessWidget {
                                   buildCountColumn(
                                       count: postCount, name: "Posts"),
                                   //Todo: Follower Column
-                                  buildCountColumn(
-                                      count: follower, name: "Followers"),
+                                  Obx(
+                                    () => buildCountColumn(
+                                        count: profileController
+                                            .followersCount.value,
+                                        name: "Followers"),
+                                  ),
                                   //Todo: post Column
-                                  buildCountColumn(
-                                      count: following, name: "Following"),
+                                  Obx(
+                                    () => buildCountColumn(
+                                        count: profileController
+                                            .followingCount.value,
+                                        name: "Following"),
+                                  ),
                                 ],
                               ),
                             ),
@@ -248,11 +296,11 @@ class ProfileScreen extends StatelessWidget {
                             SizedBox(
                               width: Get.width,
                               child: Center(
-                                child: CustomButton(
-                                  controller: generalController,
-                                  name: "Edit Profile",
-                                  onPressed: () =>
-                                      Get.to(() => EditProfileScreen()),
+                                child: Obx(
+                                  () => buildProfileButton(
+                                    isMainProfile: isMainProfile,
+                                    val: profileController.isFollowing.value,
+                                  ),
                                 ),
                               ),
                             ),
@@ -266,7 +314,7 @@ class ProfileScreen extends StatelessWidget {
               //todo: Name
               MainProfileData(
                 width: Get.width,
-                text: "${_.user!.name}",
+                text: "${user.name}",
                 fontSize: 18.0,
                 hasLine: false,
                 fontWeight: FontWeight.bold,
@@ -277,7 +325,7 @@ class ProfileScreen extends StatelessWidget {
               //todo: Bio
               MainProfileData(
                 width: Get.width * 0.5,
-                text: "${_.user!.bio}",
+                text: "${user.bio}",
                 fontSize: 15.4,
                 hasLine: true,
                 fontWeight: FontWeight.normal,
@@ -288,12 +336,32 @@ class ProfileScreen extends StatelessWidget {
             ],
           ),
         );
-      } else {
-        return Center(
-          child: CircularProgressIndicator(),
-        );
-      }
-    });
+      },
+    );
+  }
+
+  buildProfileButton({isMainProfile, val}) {
+    if (isMainProfile) {
+      return CustomButton(
+        controller: generalController,
+        name: "Edit Profile",
+        onPressed: () => Get.to(() => EditProfileScreen()),
+      );
+    } else if (val) {
+      return CustomButton(
+        controller: generalController,
+        name: "Unfollow",
+        onPressed: () =>
+            profileController.handleUnFollowUser(profileId: currentUserId),
+      );
+    } else if (!val) {
+      return CustomButton(
+        controller: generalController,
+        name: "Follow",
+        onPressed: () =>
+            profileController.handleFollowUser(profileId: currentUserId),
+      );
+    }
   }
 
   buildCountColumn({required int count, required String name}) {

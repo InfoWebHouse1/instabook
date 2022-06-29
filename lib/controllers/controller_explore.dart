@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instabook/controllers/controller_auth.dart';
 import 'package:instabook/model/model_user.dart';
+import 'package:instabook/utills/utilities.dart';
 
 class ExploreController extends GetxController {
   final authController = Get.put(AuthController());
-  final userRef = FirebaseFirestore.instance.collection("Users");
+  final currentUserId = FirebaseAuth.instance.currentUser!.uid;
   final firebaseFirestore = FirebaseFirestore.instance;
   QuerySnapshot? snapshot;
 
@@ -46,11 +47,11 @@ class ExploreController extends GetxController {
     searchResult = user;
   }
 
-  Future getData(String collection) async {
-    QuerySnapshot? querySnapshot =
-        await firebaseFirestore.collection(collection).get();
-    return querySnapshot.docs;
-  }
+  // Future getData(String collection) async {
+  //   QuerySnapshot? querySnapshot =
+  //       await firebaseFirestore.collection(collection).get();
+  //   return querySnapshot.docs;
+  // }
 
   Future queryData(String queryString) async {
     return userRef.where("name", isEqualTo: queryString).get();
@@ -62,7 +63,7 @@ class ExploreController extends GetxController {
     QuerySnapshot querySnapshot =
         await firebaseFirestore.collection("Users").get();
     for (var i = 0; i < querySnapshot.docs.length; i++) {
-      if (querySnapshot.docs[i].id != authController.user!.uid) {
+      if (querySnapshot.docs[i].id != currentUserId) {
         list.add(UserModel.fromMap(
             querySnapshot.docs[i].data() as Map<String, dynamic>));
       }
