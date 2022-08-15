@@ -15,7 +15,6 @@ final notificationRef = FirebaseFirestore.instance.collection("feed");
 final followerRef = FirebaseFirestore.instance.collection("followers");
 final followingRef = FirebaseFirestore.instance.collection("following");
 final timelineRef = FirebaseFirestore.instance.collection("timeline");
-final Reference storageReference = FirebaseStorage.instance.ref();
 
 
 var kPrimaryLight = const Color(0xFF64D8CB);

@@ -13,10 +13,10 @@ import 'package:timeago/timeago.dart' as timeAgo;
 
 class NotificationScreen extends StatelessWidget {
   final String? currentUserid;
+
   NotificationScreen({Key? key, this.currentUserid}) : super(key: key);
   final generalController = Get.put(GeneralController());
   final authController = Get.put(AuthController());
-
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +33,16 @@ class NotificationScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: StreamBuilder<QuerySnapshot>(
-        stream: notificationRef
-            .doc(currentUserid)
+        stream: FirebaseFirestore.instance
+            .collection("feed")
+            .doc(authController.user!.uid)
             .collection("feed_items")
             .orderBy("timeStamp", descending: true)
-            .limit(50)
             .snapshots(),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Center(
-              child: CircularProgressIndicator(),
+              child: Text("Loading..."),
             );
           }
           List<NotificationItems> notifyItem = [];
@@ -58,10 +58,10 @@ class NotificationScreen extends StatelessWidget {
   }
 }
 
-Widget? mediaPreview;
-String? notificationItemText;
-
 class NotificationItems extends StatelessWidget {
+  Widget? mediaPreview;
+  String? notificationItemText;
+
   final String type;
   final String userName;
   final String userId;

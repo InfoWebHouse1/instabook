@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instabook/controllers/controller_general.dart';
@@ -21,6 +22,8 @@ class MainProfilePosts extends StatelessWidget {
   final generalController = Get.put(GeneralController());
   final postController = Get.put(PostController());
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
+  final Reference storageReference = FirebaseStorage.instance.ref();
+
 
   final String postID;
   final String ownerID;

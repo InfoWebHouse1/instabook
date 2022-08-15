@@ -19,6 +19,7 @@ import 'package:image/image.dart' as Im;
 import 'package:uuid/uuid.dart';
 
 class PostController extends GetxController {
+  final Reference storageReference = FirebaseStorage.instance.ref();
   final FirebaseFirestore firestore = FirebaseFirestore.instance;
   final authController = Get.put(AuthController());
 

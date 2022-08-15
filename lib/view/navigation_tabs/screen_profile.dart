@@ -3,6 +3,7 @@
 import 'package:animator/animator.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:instabook/controllers/controller_auth.dart';
@@ -51,7 +52,7 @@ class ProfileScreen extends StatelessWidget {
           FontWeight.bold,
           30.5,
         ),
-        leading: IconButton(
+        leading: currentUserId == FirebaseAuth.instance.currentUser?.uid ? Text("") : IconButton(
           onPressed: () => Get.back(),
           icon: Icon(
             Icons.arrow_back_ios,
